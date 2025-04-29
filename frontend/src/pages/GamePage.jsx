@@ -14,19 +14,19 @@ const GamePage = () => {
       <h1 className="text-3xl font-bold mb-6 text-center">Jogo de Xadrez Educativo</h1>
       
       <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">Nível de Dificuldade:</label>
+        <label className="bg-black p-6 rounded-lg shadow-md">Nível de Dificuldade:</label>
         <select 
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value)}
-          className="bg-white border border-gray-300 rounded px-3 py-2 w-full max-w-xs"
-        >
+          className="bg-black p-6 rounded-lg shadow-md">
+
           <option value="beginner">Iniciante</option>
           <option value="intermediate">Intermediário</option>
           <option value="advanced">Avançado</option>
         </select>
       </div>
       
-      <div className="bg-white rounded-lg shadow-md p-4 mb-8">
+      <div cclassName="bg-black p-6 rounded-lg shadow-md">
         <ChessGame 
           difficulty={difficulty} 
           onAnalysis={handleAnalysis} 
@@ -34,7 +34,7 @@ const GamePage = () => {
       </div>
       
       {analysis.length > 0 && (
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-black p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold mb-4">Análise da Partida</h2>
           <div className="space-y-4">
             {analysis.map((item, index) => (

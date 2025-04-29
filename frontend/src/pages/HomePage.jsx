@@ -21,7 +21,7 @@ const HomePage = () => {
       </section>
 
       <section className="grid md:grid-cols-3 gap-8 mb-12">
-        <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-black p-6 rounded-lg shadow-md">
           <div className="text-4xl mb-4 text-blue-600">🎓</div>
           <h2 className="text-2xl font-semibold mb-2">Aprenda Jogando</h2>
           <p>
@@ -29,7 +29,7 @@ const HomePage = () => {
           </p>
         </div>
         
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-black p-6 rounded-lg shadow-md">
           <div className="text-4xl mb-4 text-blue-600">📈</div>
           <h2 className="text-2xl font-semibold mb-2">Evolua Constantemente</h2>
           <p>
@@ -37,7 +37,7 @@ const HomePage = () => {
           </p>
         </div>
         
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-black p-6 rounded-lg shadow-md">
           <div className="text-4xl mb-4 text-blue-600">🔍</div>
           <h2 className="text-2xl font-semibold mb-2">Análise Detalhada</h2>
           <p>
@@ -46,9 +46,9 @@ const HomePage = () => {
         </div>
       </section>
 
-      <section className="bg-gray-100 p-8 rounded-lg mb-12">
+      <section className="bg-black p-6 rounded-lg shadow-md">
         <h2 className="text-3xl font-bold mb-6 text-center">Como Funciona</h2>
-        <div className="grid md:grid-cols-4 gap-6">
+        <div className="bg-black p-6 rounded-lg shadow-md">
           <div className="text-center">
             <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl font-bold text-blue-600">1</span>

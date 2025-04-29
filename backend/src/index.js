@@ -41,7 +41,7 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar servidor
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, '5000', () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
 
