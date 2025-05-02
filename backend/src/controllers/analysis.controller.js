@@ -146,7 +146,7 @@ async function updateLearningProgress(userId, analysisResult) {
     const currentProgress = await prisma.learningProgress.findUnique({
       where: { userId }
     });
-    
+
     if (!currentProgress) {
       // Criar novo progresso se não existir
       return await prisma.learningProgress.create({
@@ -159,14 +159,14 @@ async function updateLearningProgress(userId, analysisResult) {
         }
       });
     }
-    
+
     // Calcular novos valores de progresso (média ponderada)
     const weight = 0.3; // Peso para o novo resultado
     const newOpenings = currentProgress.openings * (1 - weight) + (analysisResult.openingScore || 0) * weight;
     const newMiddleGame = currentProgress.middleGame * (1 - weight) + (analysisResult.middleGameScore || 0) * weight;
     const newEndGame = currentProgress.endGame * (1 - weight) + (analysisResult.endGameScore || 0) * weight;
     const newTactics = currentProgress.tactics * (1 - weight) + (analysisResult.tacticsScore || 0) * weight;
-    
+
     // Atualizar progresso
     return await prisma.learningProgress.update({
       where: { userId },
