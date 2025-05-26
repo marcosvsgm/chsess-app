@@ -6,43 +6,23 @@ const prisma = new PrismaClient();
 // Controlador de análise
 exports.createAnalysis = async (req, res) => {
   try {
-    const { id } = req.params; // ID do jogo
-    
-    // Verificar se o jogo existe
+    const { gameId, pgn } = req.body;
+
     const game = await prisma.game.findUnique({
-      where: { id }
+      where: { id: String(gameId) } // <- conversão garantida
     });
-    
+
     if (!game) {
       return res.status(404).json({ message: 'Jogo não encontrado' });
     }
-    
-    // Verificar se já existe análise para este jogo
-    const existingAnalysis = await prisma.analysis.findUnique({
-      where: { gameId: id }
-    });
-    
-    if (existingAnalysis) {
-      return res.status(400).json({ message: 'Análise já existe para este jogo' });
-    }
-    
-    // Analisar o jogo com Stockfish
-    const analysisResult = await stockfishService.analyzeGame(game.pgn);
-    
-    // Criar análise no banco de dados
+
     const analysis = await prisma.analysis.create({
       data: {
-        gameId: id,
-        comments: analysisResult.comments,
-        mistakes: analysisResult.mistakes,
-        blunders: analysisResult.blunders,
-        accuracy: analysisResult.accuracy
+        gameId: game.id,
+        pgn
       }
     });
-    
-    // Atualizar o progresso de aprendizado do usuário com base na análise
-    await updateLearningProgress(game.userId, analysisResult);
-    
+
     res.status(201).json(analysis);
   } catch (error) {
     console.error('Erro ao criar análise:', error);

@@ -161,7 +161,7 @@ const ChessGame = ({ difficulty = 'beginner', onAnalysis }) => {
       </div>
       
       <div className="mt-4 flex flex-col md:flex-row gap-4">
-        <div className="md:w-1/2">
+      <div className="move-history bg-gray-400 p-4 rounded">
           <h3 className="text-lg font-semibold mb-2">Histórico de Jogadas</h3>
           <div className="move-history bg-gray-100 p-3 rounded">
             {moveHistory.map((move, index) => (

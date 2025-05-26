@@ -57,7 +57,7 @@ const ProfilePage = () => {
         </div>
         
         {/* Progresso de Aprendizado */}
-        <div className="bg-white rounded-lg shadow-md p-6 md:col-span-2">
+        <div className="bg-white rounded-lg shadow-md p-6 md:col-span-2 flex flex-col justify-between">
           <h2 className="text-xl font-semibold mb-4">Progresso de Aprendizado</h2>
           
           <div className="space-y-4">
@@ -73,7 +73,6 @@ const ProfilePage = () => {
                 ></div>
               </div>
             </div>
-            
             <div>
               <div className="flex justify-between mb-1">
                 <span>Meio-jogo</span>
@@ -86,7 +85,6 @@ const ProfilePage = () => {
                 ></div>
               </div>
             </div>
-            
             <div>
               <div className="flex justify-between mb-1">
                 <span>Final</span>
@@ -99,7 +97,6 @@ const ProfilePage = () => {
                 ></div>
               </div>
             </div>
-            
             <div>
               <div className="flex justify-between mb-1">
                 <span>Táticas</span>
@@ -113,7 +110,28 @@ const ProfilePage = () => {
               </div>
             </div>
           </div>
-          
+
+          {/* Resumo rápido */}
+          <div className="mt-6 grid grid-cols-2 gap-4">
+            <div className="bg-blue-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-blue-700">{profile.gamesPlayed}</div>
+              <div className="text-sm text-blue-700">Partidas Jogadas</div>
+            </div>
+            <div className="bg-green-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-green-700">{profile.winRate}%</div>
+              <div className="text-sm text-green-700">Taxa de Vitória</div>
+            </div>
+            <div className="bg-yellow-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-yellow-700">{profile.rating}</div>
+              <div className="text-sm text-yellow-700">Rating Atual</div>
+            </div>
+            <div className="bg-purple-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-purple-700">{profile.recentAchievements.length}</div>
+              <div className="text-sm text-purple-700">Conquistas</div>
+            </div>
+          </div>
+
+          {/* Recomendações de estudo */}
           <div className="mt-6">
             <h3 className="font-semibold mb-3">Recomendações de Estudo</h3>
             <ul className="space-y-2">

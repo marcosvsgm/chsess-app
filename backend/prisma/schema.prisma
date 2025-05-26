@@ -1,11 +1,12 @@
-// Este arquivo configura o Prisma para o banco de dados PostgreSQL
+// Este arquivo configura o Prisma para o banco de dados 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 // Modelo de usuário
@@ -27,7 +28,7 @@ model Game {
   userId      String
   user        User     @relation(fields: [userId], references: [id])
   result      String   // "victory", "defeat", "draw"
-  moves       String[] // Lista de movimentos em notação algébrica
+  moves       String // Lista de movimentos em notação algébrica
   pgn         String   // Notação PGN completa do jogo
   difficulty  String
   evaluation  Float    // Avaliação final do jogo
