@@ -1,4 +1,3 @@
-// Este arquivo configura o Prisma para o banco de dados 
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,7 +8,6 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-// Modelo de usuário
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
@@ -22,40 +20,39 @@ model User {
   games     Game[]
 }
 
-// Modelo de jogo
 model Game {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  result      String   // "victory", "defeat", "draw"
-  moves       String // Lista de movimentos em notação algébrica
-  pgn         String   // Notação PGN completa do jogo
-  difficulty  String
-  evaluation  Float    // Avaliação final do jogo
-  createdAt   DateTime @default(now())
-  analysis    Analysis?
+  id         String    @id @default(uuid())
+  userId     String
+  result     String
+  moves      String
+  pgn        String
+  difficulty String
+  evaluation Float
+  createdAt  DateTime  @default(now())
+  analysis   Analysis?
+  user       User      @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "Game_userId_fkey")
 }
 
-// Modelo de análise
 model Analysis {
-  id          String   @id @default(uuid())
-  gameId      String   @unique
-  game        Game     @relation(fields: [gameId], references: [id])
-  comments    Json     // Comentários e dicas para cada movimento
-  mistakes    Int      // Número de erros
-  blunders    Int      // Número de erros graves
-  accuracy    Float    // Precisão geral do jogador (0-100)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid())
+  gameId    String   @unique
+  comments  Json
+  mistakes  Int
+  blunders  Int
+  accuracy  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  game      Game     @relation(fields: [gameId], references: [id])
 }
 
-// Modelo de progresso de aprendizado
 model LearningProgress {
-  id          String   @id @default(uuid())
-  userId      String   @unique
-  openings    Float    @default(0) // Progresso em aberturas (0-100)
-  middleGame  Float    @default(0) // Progresso em meio-jogo (0-100)
-  endGame     Float    @default(0) // Progresso em finais (0-100)
-  tactics     Float    @default(0) // Progresso em táticas (0-100)
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  openings   Float    @default(0)
+  middleGame Float    @default(0)
+  endGame    Float    @default(0)
+  tactics    Float    @default(0)
+  updatedAt  DateTime @updatedAt
 }

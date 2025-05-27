@@ -1,7 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
+  const { isAuthenticated, logout } = useAuth();
+
   return (
     <header className="bg-blue-800 text-white shadow-md">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -16,21 +19,46 @@ const Header = () => {
                 Início
               </Link>
             </li>
-            <li>
-              <Link to="/game" className="hover:text-blue-300 transition-colors">
-                Jogar
-              </Link>
-            </li>
-            <li>
-              <Link to="/history" className="hover:text-blue-300 transition-colors">
-                Histórico
-              </Link>
-            </li>
-            <li>
-              <Link to="/profile" className="hover:text-blue-300 transition-colors">
-                Perfil
-              </Link>
-            </li>
+            {isAuthenticated ? (
+              <>
+                <li>
+                  <Link to="/game" className="hover:text-blue-300 transition-colors">
+                    Jogar
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/history" className="hover:text-blue-300 transition-colors">
+                    Histórico
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/profile" className="hover:text-blue-300 transition-colors">
+                    Perfil
+                  </Link>
+                </li>
+                <li>
+                  <button 
+                    onClick={logout}
+                    className="hover:text-blue-300 transition-colors"
+                  >
+                    Sair
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to="/login" className="hover:text-blue-300 transition-colors">
+                    Login
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/register" className="hover:text-blue-300 transition-colors">
+                    Registrar
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
       </div>

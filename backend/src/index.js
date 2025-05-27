@@ -4,37 +4,35 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
-// Importar rotas
 const authRoutes = require('./routes/auth.routes');
 const gameRoutes = require('./routes/game.routes');
 const analysisRoutes = require('./routes/analysis.routes');
 const userRoutes = require('./routes/user.routes');
+const authenticateToken = require('./middlewares/authenticateToken');
 
 const app = express();
 
-// Corrigido: usar nomes consistentes
 const host = process.env.HOST || 'localhost';
 const port = process.env.PORT || 5000;
 
-// Middleware
 app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rotas
-app.use('/api/auth', authRoutes);
-app.use('/api/games', gameRoutes);
-app.use('/api/analysis', analysisRoutes);
-app.use('/api/users', userRoutes);
+// Rotas públicas
+app.use('/api/auth', authRoutes); // O próprio auth.route.js protege rotas que precisam (ex: /me)
 
-// Rota de teste
+// Rotas protegidas
+app.use('/api/games', authenticateToken, gameRoutes);
+app.use('/api/analysis', authenticateToken, analysisRoutes);
+app.use('/api/users', authenticateToken, userRoutes);
+
 app.get('/', (req, res) => {
   res.json({ message: 'API do Xadrez Educativo com IA está funcionando!' });
 });
 
-// Middleware de tratamento de erros
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
@@ -43,7 +41,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Iniciar servidor (corrigido para usar a variável correta)
 app.listen(port, host, () => {
   console.log(`Servidor rodando em http://${host}:${port}`);
 });
