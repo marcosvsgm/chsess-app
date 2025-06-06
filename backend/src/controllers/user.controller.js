@@ -29,16 +29,16 @@ exports.updateUserProfile = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, email } = req.body;
-    
+
     // Verificar se o usuário existe
     const user = await prisma.user.findUnique({
       where: { id }
     });
-    
+
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
-    
+
     // Atualizar usuário
     const updatedUser = await prisma.user.update({
       where: { id },
