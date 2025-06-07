@@ -6,6 +6,7 @@ CREATE TABLE `User` (
     `name` VARCHAR(191) NOT NULL,
     `level` VARCHAR(191) NOT NULL DEFAULT 'beginner',
     `rating` INTEGER NOT NULL DEFAULT 1000,
+    `profilePicture` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -24,6 +25,7 @@ CREATE TABLE `Game` (
     `evaluation` DOUBLE NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
+    INDEX `Game_userId_fkey`(`userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

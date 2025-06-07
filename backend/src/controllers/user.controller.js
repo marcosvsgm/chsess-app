@@ -1,14 +1,60 @@
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcrypt');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const prisma = new PrismaClient();
+
+// Configuração do multer para upload de arquivos
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = path.join(__dirname, '../../uploads/profile');
+    
+    // Criar diretório se não existir
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    // Gerar nome de arquivo único baseado no timestamp e ID do usuário
+    const userId = req.user.id;
+    const timestamp = Date.now();
+    const ext = path.extname(file.originalname);
+    cb(null, `user_${userId}_${timestamp}${ext}`);
+  }
+});
+
+// Filtro para aceitar apenas imagens
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Apenas imagens são permitidas!'), false);
+  }
+};
+
+// Configuração do upload
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // limite de 5MB
+  },
+  fileFilter: fileFilter
+});
+
+// Middleware para upload de imagem de perfil
+exports.uploadProfilePicture = upload.single('profilePicture');
 
 // Controlador de usuário
 exports.getUserProfile = async (req, res) => {
   try {
-    const { id } = req.params;
+    const userId = req.user.id; // Obtém o ID do usuário do token JWT
     
     const user = await prisma.user.findUnique({
-      where: { id }
+      where: { id: userId }
     });
     
     if (!user) {
@@ -17,6 +63,11 @@ exports.getUserProfile = async (req, res) => {
     
     // Remover senha do objeto retornado
     const { password, ...userWithoutPassword } = user;
+    
+    // Adicionar URL completa da imagem de perfil, se existir
+    if (userWithoutPassword.profilePicture) {
+      userWithoutPassword.profilePictureUrl = `${req.protocol}://${req.get('host')}/uploads/profile/${userWithoutPassword.profilePicture}`;
+    }
     
     res.status(200).json(userWithoutPassword);
   } catch (error) {
@@ -27,29 +78,65 @@ exports.getUserProfile = async (req, res) => {
 
 exports.updateUserProfile = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name, email } = req.body;
-
+    const userId = req.user.id; // Obtém o ID do usuário do token JWT
+    const { name, email, currentPassword, newPassword } = req.body;
+    
     // Verificar se o usuário existe
     const user = await prisma.user.findUnique({
-      where: { id }
+      where: { id: userId }
     });
 
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
 
+    // Preparar dados para atualização
+    const updateData = {};
+    
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    
+    // Se o usuário está tentando alterar a senha
+    if (newPassword && currentPassword) {
+      // Verificar se a senha atual está correta
+      const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+      
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: 'Senha atual incorreta' });
+      }
+      
+      // Hash da nova senha
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      updateData.password = hashedPassword;
+    }
+    
+    // Se foi enviada uma imagem de perfil
+    if (req.file) {
+      // Remover a imagem antiga, se existir
+      if (user.profilePicture) {
+        const oldImagePath = path.join(__dirname, '../../uploads/profile', user.profilePicture);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+      
+      // Salvar o nome do arquivo no banco de dados
+      updateData.profilePicture = req.file.filename;
+    }
+
     // Atualizar usuário
     const updatedUser = await prisma.user.update({
-      where: { id },
-      data: {
-        name,
-        email
-      }
+      where: { id: userId },
+      data: updateData
     });
     
     // Remover senha do objeto retornado
     const { password, ...userWithoutPassword } = updatedUser;
+    
+    // Adicionar URL completa da imagem de perfil, se existir
+    if (userWithoutPassword.profilePicture) {
+      userWithoutPassword.profilePictureUrl = `${req.protocol}://${req.get('host')}/uploads/profile/${userWithoutPassword.profilePicture}`;
+    }
     
     res.status(200).json(userWithoutPassword);
   } catch (error) {
@@ -60,10 +147,10 @@ exports.updateUserProfile = async (req, res) => {
 
 exports.getLearningProgress = async (req, res) => {
   try {
-    const { id } = req.params;
+    const userId = req.user.id; // Obtém o ID do usuário do token JWT
     
     const learningProgress = await prisma.learningProgress.findUnique({
-      where: { userId: id }
+      where: { userId }
     });
     
     if (!learningProgress) {
@@ -79,19 +166,19 @@ exports.getLearningProgress = async (req, res) => {
 
 exports.updateLearningProgress = async (req, res) => {
   try {
-    const { id } = req.params;
+    const userId = req.user.id; // Obtém o ID do usuário do token JWT
     const { openings, middleGame, endGame, tactics } = req.body;
     
     // Verificar se o progresso existe
     const progress = await prisma.learningProgress.findUnique({
-      where: { userId: id }
+      where: { userId }
     });
     
     if (!progress) {
       // Criar novo progresso se não existir
       const newProgress = await prisma.learningProgress.create({
         data: {
-          userId: id,
+          userId,
           openings: openings || 0,
           middleGame: middleGame || 0,
           endGame: endGame || 0,
@@ -104,7 +191,7 @@ exports.updateLearningProgress = async (req, res) => {
     
     // Atualizar progresso existente
     const updatedProgress = await prisma.learningProgress.update({
-      where: { userId: id },
+      where: { userId },
       data: {
         openings: openings !== undefined ? openings : progress.openings,
         middleGame: middleGame !== undefined ? middleGame : progress.middleGame,
@@ -122,11 +209,11 @@ exports.updateLearningProgress = async (req, res) => {
 
 exports.getUserStatistics = async (req, res) => {
   try {
-    const { id } = req.params;
+    const userId = req.user.id; // Obtém o ID do usuário do token JWT
     
     // Buscar todos os jogos do usuário
     const games = await prisma.game.findMany({
-      where: { userId: id }
+      where: { userId }
     });
     
     // Calcular estatísticas
@@ -140,7 +227,7 @@ exports.getUserStatistics = async (req, res) => {
     
     // Buscar progresso de aprendizado
     const learningProgress = await prisma.learningProgress.findUnique({
-      where: { userId: id }
+      where: { userId }
     });
     
     res.status(200).json({
@@ -156,3 +243,4 @@ exports.getUserStatistics = async (req, res) => {
     res.status(500).json({ message: 'Erro ao buscar estatísticas do usuário' });
   }
 };
+

@@ -1,51 +1,140 @@
+@import './ios-styles.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+/* Estilos personalizados */
+body {
+  @apply bg-gray-100;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  min-width: 320px;
-  min-height: 100vh;
+/* Componentes no estilo iOS */
+@layer components {
+  /* Botões */
+  .btn-ios {
+    @apply rounded-xl py-3 px-6 font-medium transition-all duration-200 focus:outline-none;
+  }
+  
+  .btn-ios-primary {
+    @apply bg-blue-500 text-white hover:bg-blue-600;
+  }
+  
+  .btn-ios-secondary {
+    @apply bg-transparent text-blue-500 border border-blue-500 hover:bg-blue-50;
+  }
+  
+  .btn-ios-danger {
+    @apply bg-red-500 text-white hover:bg-red-600;
+  }
+  
+  .btn-ios-success {
+    @apply bg-green-500 text-white hover:bg-green-600;
+  }
+  
+  .btn-ios-rounded {
+    @apply rounded-full;
+  }
+  
+  /* Inputs */
+  .input-ios {
+    @apply bg-gray-100 border-none rounded-xl py-3 px-4 text-gray-800 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200;
+  }
+  
+  /* Cards */
+  .card-ios {
+    @apply bg-white rounded-xl p-4 shadow-sm;
+  }
+  
+  /* Listas */
+  .list-ios {
+    @apply bg-white rounded-xl overflow-hidden divide-y divide-gray-200;
+  }
+  
+  .list-item-ios {
+    @apply px-4 py-3 flex items-center justify-between hover:bg-gray-50;
+  }
+  
+  /* Navegação */
+  .nav-ios {
+    @apply bg-white py-4 px-6 flex items-center justify-between shadow-sm;
+  }
+  
+  .nav-title-ios {
+    @apply text-xl font-semibold text-gray-800;
+  }
+  
+  /* Barras de progresso */
+  .progress-ios {
+    @apply bg-gray-200 rounded-full h-2 overflow-hidden;
+  }
+  
+  .progress-bar-ios {
+    @apply h-full rounded-full bg-blue-500 transition-all duration-300;
+  }
+  
+  /* Badges */
+  .badge-ios {
+    @apply inline-flex items-center justify-center bg-red-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold min-w-[20px] h-5;
+  }
+  
+  /* Tabs */
+  .tabs-ios {
+    @apply flex bg-white border-t border-gray-200 fixed bottom-0 left-0 right-0;
+  }
+  
+  .tab-ios {
+    @apply flex-1 flex flex-col items-center py-2 text-gray-500;
+  }
+  
+  .tab-ios.active {
+    @apply text-blue-500;
+  }
+  
+  .tab-icon-ios {
+    @apply text-2xl mb-1;
+  }
+  
+  .tab-label-ios {
+    @apply text-xs;
+  }
 }
 
-#root {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Ajustes para modo escuro */
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-gray-900 text-white;
+  }
+  
+  .card-ios {
+    @apply bg-gray-800;
+  }
+  
+  .list-ios {
+    @apply bg-gray-800 divide-gray-700;
+  }
+  
+  .list-item-ios {
+    @apply hover:bg-gray-700;
+  }
+  
+  .nav-ios {
+    @apply bg-gray-800;
+  }
+  
+  .nav-title-ios {
+    @apply text-white;
+  }
+  
+  .input-ios {
+    @apply bg-gray-700 text-white;
+  }
+  
+  .tabs-ios {
+    @apply bg-gray-800 border-gray-700;
+  }
 }
 
-.chess-board {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.hint {
-  background-color: rgba(255, 255, 0, 0.3);
-}
-
-.move-history {
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.tip-container {
-  border-left: 4px solid #3b82f6;
-  padding-left: 1rem;
-  margin: 1rem 0;
-  background-color: rgba(59, 130, 246, 0.1);
-  border-radius: 0 0.25rem 0.25rem 0;
-}

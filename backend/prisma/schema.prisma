@@ -9,15 +9,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  level     String   @default("beginner")
-  rating    Int      @default(1000)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  games     Game[]
+  id             String   @id @default(uuid())
+  email          String   @unique
+  password       String
+  name           String
+  level          String   @default("beginner")
+  rating         Int      @default(1000)
+  profilePicture String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  games          Game[]
 }
 
 model Game {
